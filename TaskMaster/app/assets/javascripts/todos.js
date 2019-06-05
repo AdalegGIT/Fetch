@@ -2,33 +2,40 @@
 // All this logic will automatically be available in application
 
 document.addEventListener('DOMContentLoaded',function(){
-    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
 
 const myForm = document.querySelector('#new_todo');
 
 myForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    console.log("I m in the event submit");
-    const formData = new FormData(myForm);
-    axios({
-        method: myForm.getAttribute('method'),
-        url: myForm.getAttribute('action'),
-        data: formData,
-        headers:{
-            'Content-Type': 'application/html',
-            'Accept': 'text/html'
-        }
-       // responseType: 'JSON'
-    }).then(function(response){
 
-        console.log("Success"+response.data);
+    e.preventDefault();
+
+    console.log("I m in the event submit");
+
+    const formData = new FormData(myForm);
+
+
+
+    fetch(myForm.getAttribute('action'),{
+        method: myForm.getAttribute('method'),
+        body: formData,
+        headers:{
+            
+            'Accept': 'application/json'
+        },
+        // credentials: 'same-origin'
+       // responseType: 'JSON'
+    }).then(res=> res.json())
+    .then(function(response){
+
+        console.log("Success::",response);
         document.querySelector('#todo_content').value = '';
         const myList = document.querySelector('#myList');
-
-        // const newItem = document.createElement('li');
-        // newItem.innerText = response.data.content;
-       myList.insertAdjacentHTML('beforeend', response.data);
-      // myList.appendChild(response.data);
+        //myList.insertAdjacentHTML('beforeend', response); //html response
+        const newItem = document.createElement('li');
+        newItem.innerText = response.content;
+   
+      myList.appendChild(newItem);
     });
 
 })
